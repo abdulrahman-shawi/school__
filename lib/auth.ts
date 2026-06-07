@@ -46,7 +46,7 @@ export async function login(formData: FormData) {
 
 export async function logout() {
   (await cookies()).delete(SESSION_COOKIE);
-  redirect("/login");
+  redirect("/auth/login");
 }
 
 export async function getSession() {
@@ -62,7 +62,7 @@ export async function getSession() {
 
 export async function requireAuth() {
   const session = await getSession();
-  if (!session) redirect("/login");
+  if (!session) redirect("/auth/login");
   return session;
 }
 
