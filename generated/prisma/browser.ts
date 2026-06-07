@@ -93,6 +93,11 @@ export type Subject = Prisma.SubjectModel
  */
 export type ClassSubject = Prisma.ClassSubjectModel
 /**
+ * Model ClassTeacher
+ * 
+ */
+export type ClassTeacher = Prisma.ClassTeacherModel
+/**
  * Model SubjectTeacher
  * 
  */

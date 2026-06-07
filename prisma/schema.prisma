@@ -143,6 +143,7 @@ model Teacher {
   joinDate      DateTime @default(now())
 
   classTeacherAssignments Class[]
+  classTeachers           ClassTeacher[]
   timetableEntries        ClassTimetable[]
   examSchedules           ExamSchedule[]
   subjectTeachers         SubjectTeacher[]
@@ -239,6 +240,7 @@ model Class {
 
   students             Student[]
   classSubjects        ClassSubject[]
+  classTeachers        ClassTeacher[]
   timetableEntries     ClassTimetable[]
   examSchedules        ExamSchedule[]
   attendances          Attendance[]
@@ -273,6 +275,16 @@ model ClassSubject {
   subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
 
   @@unique([classId, subjectId])
+}
+
+model ClassTeacher {
+  id        String  @id @default(cuid())
+  classId   String
+  class     Class   @relation(fields: [classId], references: [id], onDelete: Cascade)
+  teacherId String
+  teacher   Teacher @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+
+  @@unique([classId, teacherId])
 }
 
 model SubjectTeacher {
