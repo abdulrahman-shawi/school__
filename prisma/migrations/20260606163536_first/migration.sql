@@ -1,0 +1,5 @@
+-- CreateEnum
+CREATE TYPE "Day" AS ENUM ('MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY');
+
+-- CreateEnum
+CREATE TYPE "UserSex" AS ENUM ('MALE', 'FEMALE');
