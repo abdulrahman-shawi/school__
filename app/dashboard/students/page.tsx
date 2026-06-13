@@ -10,7 +10,7 @@ import { Modal } from "@/components/ui/Modal";
 import { Badge } from "@/components/ui/Badge";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
-import { GENDER_MAP } from "@/lib/utils";
+import { GENDER_MAP, formatClassName } from "@/lib/utils";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 
 export default function StudentsPage() {
@@ -73,7 +73,7 @@ export default function StudentsPage() {
   const columns = [
     { key: "name", header: "الاسم", render: (s: any) => s.user.name },
     { key: "admissionNo", header: "رقم القيد", render: (s: any) => s.admissionNo },
-    { key: "class", header: "الصف", render: (s: any) => s.class?.name || "-" },
+    { key: "class", header: "الصف", render: (s: any) => (s.class ? formatClassName(s.class) : "-") },
     { key: "parent", header: "ولي الأمر", render: (s: any) => s.parent?.user.name || "-" },
     {
       key: "gender",
@@ -143,7 +143,7 @@ export default function StudentsPage() {
             <Select label="الجنس" name="gender" options={[{ value: "MALE", label: "ذكر" }, { value: "FEMALE", label: "أنثى" }]} defaultValue={editing?.gender} />
             <Input label="فصيلة الدم" name="bloodGroup" defaultValue={editing?.bloodGroup} />
             <Input label="المدرسة السابقة" name="previousSchool" defaultValue={editing?.previousSchool} />
-            <Select label="الصف" name="classId" options={classes.map((c) => ({ value: c.id, label: c.name }))} defaultValue={editing?.classId} />
+            <Select label="الصف" name="classId" options={classes.map((c) => ({ value: c.id, label: formatClassName(c) }))} defaultValue={editing?.classId} />
             <Select label="ولي الأمر" name="parentId" options={parents.map((p) => ({ value: p.id, label: p.user.name }))} defaultValue={editing?.parentId} />
             <Input label="الهاتف" name="phone" defaultValue={editing?.user?.phone} />
             <Input label="العنوان" name="address" defaultValue={editing?.user?.address} />

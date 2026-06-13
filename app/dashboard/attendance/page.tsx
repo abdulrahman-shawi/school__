@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import { ATTENDANCE_STATUS_MAP } from "@/lib/utils";
+import { ATTENDANCE_STATUS_MAP, formatClassName } from "@/lib/utils";
 
 export default function AttendancePage() {
   const [classes, setClasses] = useState<any[]>([]);
@@ -58,7 +58,7 @@ export default function AttendancePage() {
     <div className="space-y-4">
       <h1 className="text-2xl font-bold">تسجيل الحضور</h1>
       <div className="grid gap-4 sm:grid-cols-3">
-        <Select label="الصف" options={classes.map((c) => ({ value: c.id, label: c.name }))} value={selectedClass} onChange={(e) => setSelectedClass(e.target.value)} />
+        <Select label="الصف" options={classes.map((c) => ({ value: c.id, label: formatClassName(c) }))} value={selectedClass} onChange={(e) => setSelectedClass(e.target.value)} />
         <Input label="التاريخ" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
       </div>
 

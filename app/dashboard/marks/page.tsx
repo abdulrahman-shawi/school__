@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { formatClassName } from "@/lib/utils";
 import { getClasses } from "@/lib/actions/classes";
 import { getExams } from "@/lib/actions/exams";
 import { Select } from "@/components/ui/Select";
@@ -53,7 +54,7 @@ export default function MarksPage() {
     <div className="space-y-4">
       <h1 className="text-2xl font-bold">إدخال الدرجات</h1>
       <div className="grid gap-4 sm:grid-cols-3">
-        <Select label="الصف" options={classes.map((c) => ({ value: c.id, label: c.name }))} value={selectedClass} onChange={(e) => setSelectedClass(e.target.value)} />
+        <Select label="الصف" options={classes.map((c) => ({ value: c.id, label: formatClassName(c) }))} value={selectedClass} onChange={(e) => setSelectedClass(e.target.value)} />
         <Select label="الامتحان" options={exams.map((e) => ({ value: e.id, label: e.name }))} value={selectedExamId} onChange={(e) => { setSelectedExamId(e.target.value); setSelectedSchedule(""); }} />
         <Select label="المادة" options={schedules.map((s: any) => ({ value: s.id, label: `${s.subject.name} - ${formatDate(s.examDate)}` }))} value={selectedSchedule} onChange={(e) => setSelectedSchedule(e.target.value)} />
       </div>

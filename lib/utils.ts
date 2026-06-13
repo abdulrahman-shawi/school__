@@ -16,6 +16,10 @@ export function formatCurrency(amount: number | null | undefined): string {
   return `${amount.toFixed(2)} ر.س`;
 }
 
+export function formatClassName(classItem: { name: string; section?: string | null }): string {
+  return classItem.section ? `${classItem.name} - ${classItem.section}` : classItem.name;
+}
+
 export function getInitials(name: string): string {
   return name
     .split(" ")

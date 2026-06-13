@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
+import { formatClassName } from "@/lib/utils";
 import { Plus, Pencil, Trash2, BookOpen, Users } from "lucide-react";
 
 export default function ClassesPage() {
@@ -134,8 +135,7 @@ export default function ClassesPage() {
   }
 
   const columns = [
-    { key: "name", header: "الصف" },
-    { key: "section", header: "الشعبة", render: (c: any) => c.section || "-" },
+    { key: "name", header: "الصف", render: (c: any) => formatClassName(c) },
     {
       key: "academicYear",
       header: "السنة",
@@ -276,7 +276,7 @@ export default function ClassesPage() {
       <Modal
         isOpen={linkSubjectsOpen}
         onClose={() => setLinkSubjectsOpen(false)}
-        title={`ربط مواد بـ ${linkSubjectsClass?.name || ""}`}
+        title={`ربط مواد بـ ${linkSubjectsClass ? formatClassName(linkSubjectsClass) : ""}`}
         size="lg"
       >
         <div className="space-y-4">
@@ -328,7 +328,7 @@ export default function ClassesPage() {
       <Modal
         isOpen={linkTeachersOpen}
         onClose={() => setLinkTeachersOpen(false)}
-        title={`ربط معلمين بـ ${linkTeachersClass?.name || ""}`}
+        title={`ربط معلمين بـ ${linkTeachersClass ? formatClassName(linkTeachersClass) : ""}`}
         size="lg"
       >
         <div className="space-y-4">

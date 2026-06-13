@@ -11,7 +11,7 @@ import { Modal } from "@/components/ui/Modal";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Badge } from "@/components/ui/Badge";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, formatClassName } from "@/lib/utils";
 import { Plus, Trash2, Wallet } from "lucide-react";
 
 export default function FeesPage() {
@@ -115,7 +115,7 @@ export default function FeesPage() {
           <Modal isOpen={isModalOpen && modalType === "collection"} onClose={() => setIsModalOpen(false)} title="تحصيل جديد">
             <form action={handleCollectionSubmit} className="space-y-4">
               <Select label="الطالب" name="studentId" options={students.map((s) => ({ value: s.id, label: s.user.name }))} required />
-              <Select label="الصف" name="classId" options={classes.map((c) => ({ value: c.id, label: c.name }))} required />
+              <Select label="الصف" name="classId" options={classes.map((c) => ({ value: c.id, label: formatClassName(c) }))} required />
               <Select label="نوع الرسم" name="feeTypeId" options={feeTypes.map((t) => ({ value: t.id, label: t.name }))} required />
               <Select label="السنة" name="academicYearId" options={years.map((y) => ({ value: y.id, label: y.name }))} required />
               <Input label="المبلغ" name="amount" type="number" required />

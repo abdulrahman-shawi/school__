@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
-import { formatDate } from "@/lib/utils";
+import { formatDate, formatClassName } from "@/lib/utils";
 import { Plus, Trash2 } from "lucide-react";
 
 export default function HomeworkPage() {
@@ -56,7 +56,7 @@ export default function HomeworkPage() {
 
   const columns = [
     { key: "title", header: "الواجب" },
-    { key: "class", header: "الصف", render: (h: any) => h.class.name },
+    { key: "class", header: "الصف", render: (h: any) => formatClassName(h.class) },
     { key: "subject", header: "المادة", render: (h: any) => h.subject.name },
     { key: "dueDate", header: "تاريخ التسليم", render: (h: any) => formatDate(h.dueDate) },
     { key: "creator", header: "منشئ", render: (h: any) => h.creator.name },
@@ -75,7 +75,7 @@ export default function HomeworkPage() {
       )}
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="واجب جديد">
         <form action={handleSubmit} className="space-y-4">
-          <Select label="الصف" name="classId" options={classes.map((c) => ({ value: c.id, label: c.name }))} required />
+          <Select label="الصف" name="classId" options={classes.map((c) => ({ value: c.id, label: formatClassName(c) }))} required />
           <Select label="المادة" name="subjectId" options={subjects.map((s) => ({ value: s.id, label: s.name }))} required />
           <Input label="العنوان" name="title" required />
           <Input label="الوصف" name="description" />

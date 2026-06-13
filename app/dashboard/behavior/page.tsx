@@ -10,7 +10,7 @@ import { Modal } from "@/components/ui/Modal";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Badge } from "@/components/ui/Badge";
-import { formatDate } from "@/lib/utils";
+import { formatDate, formatClassName } from "@/lib/utils";
 import { Plus, Trash2 } from "lucide-react";
 
 export default function BehaviorPage() {
@@ -54,7 +54,7 @@ export default function BehaviorPage() {
 
   const columns = [
     { key: "student", header: "الطالب", render: (r: any) => r.student.user.name },
-    { key: "class", header: "الصف", render: (r: any) => r.student.class?.name || "-" },
+    { key: "class", header: "الصف", render: (r: any) => (r.student.class ? formatClassName(r.student.class) : "-") },
     { key: "type", header: "النوع", render: (r: any) => <Badge variant={r.type === "POSITIVE" ? "success" : "danger"}>{r.type === "POSITIVE" ? "إيجابي" : "سلبي"}</Badge> },
     { key: "category", header: "التصنيف" },
     { key: "description", header: "الوصف" },

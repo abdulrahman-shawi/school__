@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Select } from "@/components/ui/Select";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import { DAYS_AR } from "@/lib/utils";
+import { DAYS_AR, formatClassName } from "@/lib/utils";
 import { Plus, Trash2 } from "lucide-react";
 
 export default function TimetablePage() {
@@ -70,7 +70,7 @@ export default function TimetablePage() {
       <div className="flex items-center gap-4">
         <Select
           label="اختر الصف"
-          options={classes.map((c) => ({ value: c.id, label: c.name }))}
+          options={classes.map((c) => ({ value: c.id, label: formatClassName(c) }))}
           value={selectedClass}
           onChange={(e) => setSelectedClass(e.target.value)}
         />
