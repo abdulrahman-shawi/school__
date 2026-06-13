@@ -331,6 +331,7 @@ export const ExamScalarFieldEnum = {
   type: 'type',
   termId: 'termId',
   academicYearId: 'academicYearId',
+  classId: 'classId',
   startDate: 'startDate',
   endDate: 'endDate',
   createdAt: 'createdAt'

@@ -56,6 +56,19 @@ async function main() {
   });
   console.log("✅ الفصل الدراسي:", term1.name);
 
+  const term2 = await prisma.term.upsert({
+    where: { academicYearId_name: { academicYearId: year.id, name: "الفصل الثاني" } },
+    update: {},
+    create: {
+      name: "الفصل الثاني",
+      academicYearId: year.id,
+      startDate: new Date("2026-01-20"),
+      endDate: new Date("2026-06-15"),
+      isCurrent: false,
+    },
+  });
+  console.log("✅ الفصل الدراسي:", term2.name);
+
   // 4. مواد دراسية
   const subjectsData = [
     { name: "الرياضيات", code: "MATH" },

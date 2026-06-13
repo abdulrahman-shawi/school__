@@ -80,6 +80,7 @@ export const examSchema = z.object({
   type: z.string().min(1, "نوع الامتحان مطلوب"),
   termId: z.string().min(1, "الفصل الدراسي مطلوب"),
   academicYearId: z.string().min(1, "السنة الدراسية مطلوبة"),
+  classId: z.string().min(1, "الصف مطلوب"),
   startDate: z.string().min(1, "تاريخ البداية مطلوب"),
   endDate: z.string().optional(),
 });

@@ -6,7 +6,7 @@ import { revalidatePath } from "next/cache";
 export async function getExams() {
   return prisma.exam.findMany({
     orderBy: { createdAt: "desc" },
-    include: { term: true, academicYear: true, schedules: true },
+    include: { term: true, academicYear: true, class: true, schedules: true },
   });
 }
 
@@ -15,6 +15,7 @@ export async function createExam(data: {
   type: string;
   termId: string;
   academicYearId: string;
+  classId: string;
   startDate: string;
   endDate?: string;
 }) {
@@ -24,6 +25,7 @@ export async function createExam(data: {
       type: data.type,
       termId: data.termId,
       academicYearId: data.academicYearId,
+      classId: data.classId,
       startDate: new Date(data.startDate),
       endDate: data.endDate ? new Date(data.endDate) : undefined,
     },

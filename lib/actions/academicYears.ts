@@ -4,7 +4,10 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
 export async function getAcademicYears() {
-  return prisma.academicYear.findMany({ orderBy: { startDate: "desc" } });
+  return prisma.academicYear.findMany({
+    orderBy: { startDate: "desc" },
+    include: { terms: { orderBy: { startDate: "asc" } } },
+  });
 }
 
 export async function createAcademicYear(data: {

@@ -243,6 +243,7 @@ model Class {
   classTeachers        ClassTeacher[]
   timetableEntries     ClassTimetable[]
   examSchedules        ExamSchedule[]
+  exams                Exam[]
   attendances          Attendance[]
   homeworks            Homework[]
   feeCollections       FeeCollection[]
@@ -322,6 +323,8 @@ model Exam {
   term           Term         @relation(fields: [termId], references: [id], onDelete: Cascade)
   academicYearId String
   academicYear   AcademicYear @relation(fields: [academicYearId], references: [id], onDelete: Cascade)
+  classId        String?
+  class          Class?       @relation(fields: [classId], references: [id], onDelete: SetNull)
   startDate      DateTime
   endDate        DateTime?
   createdAt      DateTime     @default(now())
