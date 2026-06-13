@@ -10,6 +10,12 @@ import { Modal } from "@/components/ui/Modal";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { formatDate } from "@/lib/utils";
+
+function toDateInputValue(date: any): string {
+  if (!date) return "";
+  const value = typeof date === "string" ? date : date.toISOString ? date.toISOString() : String(date);
+  return value.split("T")[0];
+}
 import { Plus, Pencil, Trash2 } from "lucide-react";
 
 export default function ExamsPage() {
@@ -90,8 +96,8 @@ export default function ExamsPage() {
             <Select label="السنة الدراسية" name="academicYearId" options={years.map((y) => ({ value: y.id, label: y.name }))} defaultValue={editing?.academicYearId} required />
             <Select label="الفصل" name="termId" options={termOptions} defaultValue={editing?.termId} required />
             <Select label="الصف" name="classId" options={classOptions} defaultValue={editing?.classId} required />
-            <Input label="تاريخ البداية" name="startDate" type="date" defaultValue={editing?.startDate?.split("T")[0]} required />
-            <Input label="تاريخ النهاية" name="endDate" type="date" defaultValue={editing?.endDate?.split("T")[0]} />
+            <Input label="تاريخ البداية" name="startDate" type="date" defaultValue={toDateInputValue(editing?.startDate)} required />
+            <Input label="تاريخ النهاية" name="endDate" type="date" defaultValue={toDateInputValue(editing?.endDate)} />
           </div>
           <div className="flex justify-end pt-4"><Button type="submit">{editing ? "حفظ" : "إضافة"}</Button></div>
         </form>
