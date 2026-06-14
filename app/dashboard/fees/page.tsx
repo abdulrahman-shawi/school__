@@ -235,7 +235,7 @@ export default function FeesPage() {
                 label="تاريخ نهاية التمديد"
                 name="extensionUntil"
                 type="date"
-                defaultValue={selectedStudentStatus?.extensionUntil?.split("T")[0]}
+                defaultValue={selectedStudentStatus?.extensionUntil ? new Date(selectedStudentStatus.extensionUntil).toISOString().split("T")[0] : ""}
                 required
               />
               <p className="text-xs text-gray-500">سيتمكن الطالب وولي أمره من تسجيل الدخول حتى هذا التاريخ حتى لو لم تُسدد الرسوم.</p>

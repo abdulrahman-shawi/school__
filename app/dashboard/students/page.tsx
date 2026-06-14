@@ -151,7 +151,7 @@ export default function StudentsPage() {
             <Input label="البريد" name="email" type="email" defaultValue={editing?.user?.email} required />
             <Input label="كلمة المرور" name="password" type="password" required={!editing} placeholder={editing ? "اتركها فارغة" : ""} />
             <Input label="رقم القيد" name="admissionNo" defaultValue={editing?.admissionNo} required />
-            <Input label="تاريخ الميلاد" name="dateOfBirth" type="date" defaultValue={editing?.dateOfBirth?.split("T")[0]} />
+            <Input label="تاريخ الميلاد" name="dateOfBirth" type="date" defaultValue={editing?.dateOfBirth ? new Date(editing.dateOfBirth).toISOString().split("T")[0] : ""} />
             <Select label="الجنس" name="gender" options={[{ value: "MALE", label: "ذكر" }, { value: "FEMALE", label: "أنثى" }]} defaultValue={editing?.gender} />
             <Input label="فصيلة الدم" name="bloodGroup" defaultValue={editing?.bloodGroup} />
             <Input label="المدرسة السابقة" name="previousSchool" defaultValue={editing?.previousSchool} />
@@ -159,8 +159,8 @@ export default function StudentsPage() {
             <Select label="ولي الأمر" name="parentId" options={parents.map((p) => ({ value: p.id, label: p.user.name }))} defaultValue={editing?.parentId} />
             <Input label="الهاتف" name="phone" defaultValue={editing?.user?.phone} />
             <Input label="العنوان" name="address" defaultValue={editing?.user?.address} />
-            <Input label="الرسوم الشهرية" name="monthlyFee" type="number" defaultValue={editing?.monthlyFee} />
-            <Input label="تمديد الرسوم حتى" name="feeExtensionUntil" type="date" defaultValue={editing?.feeExtensionUntil?.split("T")[0]} />
+            <Input label="الرسوم الشهرية" name="monthlyFee" type="number" defaultValue={editing?.monthlyFee ?? ""} />
+            <Input label="تمديد الرسوم حتى" name="feeExtensionUntil" type="date" defaultValue={editing?.feeExtensionUntil ? new Date(editing.feeExtensionUntil).toISOString().split("T")[0] : ""} />
             {editing && (
               <Select label="الحالة" name="isActive" options={[{ value: "true", label: "نشط" }, { value: "false", label: "معطل" }]} defaultValue={String(editing?.user?.isActive ?? true)} />
             )}
