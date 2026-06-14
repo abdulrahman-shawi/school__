@@ -3391,6 +3391,8 @@ export const StudentScalarFieldEnum = {
   enrollmentDate: 'enrollmentDate',
   bloodGroup: 'bloodGroup',
   previousSchool: 'previousSchool',
+  monthlyFee: 'monthlyFee',
+  feeExtensionUntil: 'feeExtensionUntil',
   classId: 'classId',
   parentId: 'parentId'
 } as const

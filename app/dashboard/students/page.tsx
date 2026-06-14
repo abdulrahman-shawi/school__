@@ -10,7 +10,7 @@ import { Modal } from "@/components/ui/Modal";
 import { Badge } from "@/components/ui/Badge";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
-import { GENDER_MAP, formatClassName } from "@/lib/utils";
+import { GENDER_MAP, formatClassName, formatCurrency, formatDate } from "@/lib/utils";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 
 export default function StudentsPage() {
@@ -50,6 +50,8 @@ export default function StudentsPage() {
       classId: data.classId,
       parentId: data.parentId,
       isActive: data.isActive === "true",
+      monthlyFee: data.monthlyFee ? Number(data.monthlyFee) : undefined,
+      feeExtensionUntil: data.feeExtensionUntil ? (data.feeExtensionUntil as string) : undefined,
     };
 
     if (editing) {
@@ -88,6 +90,16 @@ export default function StudentsPage() {
           {s.user.isActive ? "نشط" : "معطل"}
         </Badge>
       ),
+    },
+    {
+      key: "monthlyFee",
+      header: "الرسوم الشهرية",
+      render: (s: any) => (s.monthlyFee ? formatCurrency(s.monthlyFee) : "-"),
+    },
+    {
+      key: "feeExtensionUntil",
+      header: "التمديد حتى",
+      render: (s: any) => (s.feeExtensionUntil ? formatDate(s.feeExtensionUntil) : "-"),
     },
   ];
 
@@ -147,6 +159,8 @@ export default function StudentsPage() {
             <Select label="ولي الأمر" name="parentId" options={parents.map((p) => ({ value: p.id, label: p.user.name }))} defaultValue={editing?.parentId} />
             <Input label="الهاتف" name="phone" defaultValue={editing?.user?.phone} />
             <Input label="العنوان" name="address" defaultValue={editing?.user?.address} />
+            <Input label="الرسوم الشهرية" name="monthlyFee" type="number" defaultValue={editing?.monthlyFee} />
+            <Input label="تمديد الرسوم حتى" name="feeExtensionUntil" type="date" defaultValue={editing?.feeExtensionUntil?.split("T")[0]} />
             {editing && (
               <Select label="الحالة" name="isActive" options={[{ value: "true", label: "نشط" }, { value: "false", label: "معطل" }]} defaultValue={String(editing?.user?.isActive ?? true)} />
             )}

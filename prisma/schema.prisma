@@ -171,6 +171,8 @@ model Student {
   enrollmentDate DateTime @default(now())
   bloodGroup     String?
   previousSchool String?
+  monthlyFee     Float?
+  feeExtensionUntil DateTime?
   classId        String?
   class          Class?   @relation(fields: [classId], references: [id])
   parentId       String?

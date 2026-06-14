@@ -4,6 +4,7 @@ import bcryptjs from "bcryptjs";
 import { cookies } from "next/headers";
 import { prisma } from "./prisma";
 import { redirect } from "next/navigation";
+import { isParentFeeAccessAllowed, isStudentFeeAccessAllowed } from "./fees";
 
 const SESSION_COOKIE = "session";
 
@@ -19,13 +20,30 @@ export async function login(formData: FormData) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
 
-  const user = await prisma.user.findUnique({ where: { email } });
+  const user = await prisma.user.findUnique({
+    where: { email },
+    include: { student: true, parent: true },
+  });
   if (!user || !(await verifyPassword(password, user.password))) {
     return { error: "البريد الإلكتروني أو كلمة المرور غير صحيحة" };
   }
 
   if (!user.isActive) {
     return { error: "الحساب معطل، تواصل مع المسؤول" };
+  }
+
+  if (user.role === "STUDENT" && user.student) {
+    const allowed = await isStudentFeeAccessAllowed(user.student.id);
+    if (!allowed) {
+      return { error: "لا يمكن تسجيل الدخول: الرسوم الشهرية غير مسددة بالكامل وانتهى تمديد السداد" };
+    }
+  }
+
+  if (user.role === "PARENT" && user.parent) {
+    const allowed = await isParentFeeAccessAllowed(user.parent.id);
+    if (!allowed) {
+      return { error: "لا يمكن تسجيل الدخول: أحد الأبناء لديه رسوم شهرية غير مسددة بالكامل وانتهى تمديد السداد" };
+    }
   }
 
   await prisma.user.update({

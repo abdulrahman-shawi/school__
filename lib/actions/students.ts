@@ -28,6 +28,8 @@ export async function createStudent(data: {
   previousSchool?: string;
   classId?: string;
   parentId?: string;
+  monthlyFee?: number;
+  feeExtensionUntil?: string;
 }) {
   const existing = await prisma.user.findUnique({ where: { email: data.email } });
   if (existing) return { error: "البريد الإلكتروني مستخدم مسبقاً" };
@@ -52,6 +54,8 @@ export async function createStudent(data: {
           previousSchool: data.previousSchool,
           classId: data.classId || undefined,
           parentId: data.parentId || undefined,
+          monthlyFee: data.monthlyFee ?? undefined,
+          feeExtensionUntil: data.feeExtensionUntil ? new Date(data.feeExtensionUntil) : undefined,
         },
       },
     },
@@ -76,6 +80,8 @@ export async function updateStudent(
     classId?: string;
     parentId?: string;
     isActive?: boolean;
+    monthlyFee?: number;
+    feeExtensionUntil?: string;
   }
 ) {
   const student = await prisma.student.findUnique({ where: { id }, include: { user: true } });
@@ -102,6 +108,8 @@ export async function updateStudent(
       previousSchool: data.previousSchool,
       classId: data.classId || undefined,
       parentId: data.parentId || undefined,
+      monthlyFee: data.monthlyFee ?? undefined,
+      feeExtensionUntil: data.feeExtensionUntil ? new Date(data.feeExtensionUntil) : undefined,
     },
   });
 
