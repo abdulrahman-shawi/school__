@@ -2,23 +2,15 @@
 
 import { useState, useEffect } from "react";
 import { formatClassName } from "@/lib/utils";
-import { getMessages, createMessage } from "@/lib/actions/messages";
+import { getMessages } from "@/lib/actions/messages";
 import { getSession } from "@/lib/auth";
-import { getUsers } from "@/lib/actions/users";
-import { getClasses } from "@/lib/actions/classes";
-import { getSubjects } from "@/lib/actions/subjects";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Card, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Modal } from "@/components/ui/Modal";
-import { Input } from "@/components/ui/Input";
-import { Select } from "@/components/ui/Select";
+import { MessageFormModal } from "@/components/forms/MessageFormModal";
 import { Plus } from "lucide-react";
 
 export default function MessagesPage() {
   const [messages, setMessages] = useState<any[]>([]);
-  const [users, setUsers] = useState<any[]>([]);
-  const [classes, setClasses] = useState<any[]>([]);
-  const [subjects, setSubjects] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userId, setUserId] = useState<string>("");
@@ -28,27 +20,14 @@ export default function MessagesPage() {
       const session = await getSession();
       if (!session) return;
       setUserId(session.userId);
-      const [m, u, c, s] = await Promise.all([
-        getMessages(session.userId),
-        getUsers(),
-        getClasses(),
-        getSubjects(),
-      ]);
-      setMessages(m); setUsers(u); setClasses(c); setSubjects(s); setLoading(false);
+      const m = await getMessages(session.userId);
+      setMessages(m);
+      setLoading(false);
     }
     init();
   }, []);
 
-  async function handleSubmit(formData: FormData) {
-    const data = Object.fromEntries(formData.entries());
-    await createMessage({
-      senderId: userId,
-      receiverId: data.receiverId as string,
-      classId: data.classId as string,
-      subjectId: data.subjectId as string || undefined,
-      content: data.content as string,
-    });
-    setIsModalOpen(false);
+  async function reloadMessages() {
     const m = await getMessages(userId);
     setMessages(m);
   }
@@ -66,7 +45,13 @@ export default function MessagesPage() {
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-semibold">{m.senderId === userId ? `إلى: ${m.receiver.name}` : `من: ${m.sender.name}`}</p>
+                    <p className="font-semibold">
+                      {m.senderId === userId
+                        ? m.receiver
+                          ? `إلى: ${m.receiver.name}`
+                          : `إلى صف: ${formatClassName(m.class)}`
+                        : `من: ${m.sender.name}`}
+                    </p>
                     <p className="text-sm text-gray-600">{m.content}</p>
                   </div>
                   <span className="text-xs text-gray-400">{new Date(m.createdAt).toLocaleString("ar-SA")}</span>
@@ -76,15 +61,12 @@ export default function MessagesPage() {
           ))}
         </div>
       )}
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="رسالة جديدة">
-        <form action={handleSubmit} className="space-y-4">
-          <Select label="المستلم" name="receiverId" options={users.map((u) => ({ value: u.id, label: u.name }))} required />
-          <Select label="الصف" name="classId" options={classes.map((c) => ({ value: c.id, label: formatClassName(c) }))} required />
-          <Select label="المادة (اختياري)" name="subjectId" options={subjects.map((s) => ({ value: s.id, label: s.name }))} />
-          <textarea name="content" required placeholder="نص الرسالة" className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" rows={4} />
-          <div className="flex justify-end"><Button type="submit">إرسال</Button></div>
-        </form>
-      </Modal>
+      <MessageFormModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        senderId={userId}
+        onSent={reloadMessages}
+      />
     </div>
   );
 }

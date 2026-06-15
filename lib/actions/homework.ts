@@ -16,6 +16,7 @@ export async function createHomework(data: {
   title: string;
   description?: string;
   maxMarks?: number;
+  attachmentUrl?: string;
   dueDate: string;
   createdBy: string;
 }) {
@@ -40,6 +41,7 @@ export async function updateHomework(id: string, data: any) {
   revalidatePath("/dashboard/homework");
   return { success: true };
 }
+
 
 export async function deleteHomework(id: string) {
   await prisma.homework.delete({ where: { id } });

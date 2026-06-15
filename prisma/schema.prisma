@@ -409,18 +409,19 @@ model NoticeBoard {
 }
 
 model Homework {
-  id          String   @id @default(cuid())
-  classId     String
-  class       Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
-  subjectId   String
-  subject     Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
-  title       String
-  description String?
-  maxMarks    Float?
-  dueDate     DateTime
-  createdBy   String
-  creator     User     @relation(fields: [createdBy], references: [id])
-  createdAt   DateTime @default(now())
+  id            String   @id @default(cuid())
+  classId       String
+  class         Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  subjectId     String
+  subject       Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  title         String
+  description   String?
+  maxMarks      Float?
+  attachmentUrl String?
+  dueDate       DateTime
+  createdBy     String
+  creator       User     @relation(fields: [createdBy], references: [id])
+  createdAt     DateTime @default(now())
 
   submissions HomeworkSubmission[]
 }
@@ -469,20 +470,20 @@ model FeeCollection {
 }
 
 model Message {
-  id          String    @id @default(cuid())
-  senderId    String
-  sender      User      @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
-  receiverId  String
-  receiver    User      @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
-  classId     String
-  class       Class     @relation(fields: [classId], references: [id], onDelete: Cascade)
-  subjectId   String?
-  subject     Subject?  @relation(fields: [subjectId], references: [id], onDelete: SetNull)
-  content     String
-  messageType String    @default("TEXT")
+  id            String    @id @default(cuid())
+  senderId      String
+  sender        User      @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiverId    String?
+  receiver      User?     @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+  classId       String
+  class         Class     @relation(fields: [classId], references: [id], onDelete: Cascade)
+  subjectId     String?
+  subject       Subject?  @relation(fields: [subjectId], references: [id], onDelete: SetNull)
+  content       String
+  messageType   String    @default("TEXT")
   attachmentUrl String?
-  readAt      DateTime?
-  createdAt   DateTime  @default(now())
+  readAt        DateTime?
+  createdAt     DateTime  @default(now())
 
   @@index([senderId, createdAt])
   @@index([receiverId, createdAt])

@@ -4,14 +4,16 @@ import { useState, useEffect } from "react";
 import { getStudents, createStudent, updateStudent, deleteStudent } from "@/lib/actions/students";
 import { getClasses } from "@/lib/actions/classes";
 import { getParents } from "@/lib/actions/parents";
+import { getSession } from "@/lib/auth";
 import { DataTable } from "@/components/data-table/DataTable";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
 import { Badge } from "@/components/ui/Badge";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
+import { MessageFormModal } from "@/components/forms/MessageFormModal";
 import { GENDER_MAP, formatClassName, formatCurrency, formatDate } from "@/lib/utils";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Mail } from "lucide-react";
 
 export default function StudentsPage() {
   const [students, setStudents] = useState<any[]>([]);
@@ -20,9 +22,16 @@ export default function StudentsPage() {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editing, setEditing] = useState<any>(null);
+  const [userId, setUserId] = useState<string>("");
+  const [messageStudent, setMessageStudent] = useState<any>(null);
 
   useEffect(() => {
-    loadData();
+    async function init() {
+      const session = await getSession();
+      if (session) setUserId(session.userId);
+      loadData();
+    }
+    init();
   }, []);
 
   async function loadData() {
@@ -72,6 +81,10 @@ export default function StudentsPage() {
     loadData();
   }
 
+  function openMessageModal(student: any) {
+    setMessageStudent(student);
+  }
+
   const columns = [
     { key: "name", header: "الاسم", render: (s: any) => s.user.name },
     { key: "admissionNo", header: "رقم القيد", render: (s: any) => s.admissionNo },
@@ -103,6 +116,11 @@ export default function StudentsPage() {
     },
   ];
 
+  const defaultReceiverId = messageStudent
+    ? messageStudent.parent?.user?.id || messageStudent.userId
+    : undefined;
+  const defaultClassId = messageStudent?.classId || undefined;
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -122,6 +140,13 @@ export default function StudentsPage() {
           keyExtractor={(s) => s.id}
           actions={(s) => (
             <div className="flex gap-2">
+              <button
+                onClick={() => openMessageModal(s)}
+                className="rounded p-1 text-green-600 hover:bg-green-50"
+                title="إرسال رسالة"
+              >
+                <Mail className="h-4 w-4" />
+              </button>
               <button
                 onClick={() => { setEditing(s); setIsModalOpen(true); }}
                 className="rounded p-1 text-blue-600 hover:bg-blue-50"
@@ -170,6 +195,14 @@ export default function StudentsPage() {
           </div>
         </form>
       </Modal>
+
+      <MessageFormModal
+        isOpen={!!messageStudent}
+        onClose={() => setMessageStudent(null)}
+        senderId={userId}
+        defaultReceiverId={defaultReceiverId}
+        defaultClassId={defaultClassId}
+      />
     </div>
   );
 }

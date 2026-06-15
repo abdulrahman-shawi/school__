@@ -118,6 +118,7 @@ export const homeworkSchema = z.object({
   title: z.string().min(1, "عنوان الواجب مطلوب"),
   description: z.string().optional(),
   maxMarks: z.coerce.number().optional(),
+  attachmentUrl: z.string().optional(),
   dueDate: z.string().min(1, "تاريخ التسليم مطلوب"),
 });
 
@@ -145,7 +146,7 @@ export const noticeSchema = z.object({
 });
 
 export const messageSchema = z.object({
-  receiverId: z.string().min(1, "المستلم مطلوب"),
+  receiverId: z.string().optional(),
   classId: z.string().min(1, "الصف مطلوب"),
   subjectId: z.string().optional(),
   content: z.string().min(1, "المحتوى مطلوب"),

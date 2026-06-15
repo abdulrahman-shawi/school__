@@ -420,6 +420,7 @@ export const HomeworkScalarFieldEnum = {
   title: 'title',
   description: 'description',
   maxMarks: 'maxMarks',
+  attachmentUrl: 'attachmentUrl',
   dueDate: 'dueDate',
   createdBy: 'createdBy',
   createdAt: 'createdAt'

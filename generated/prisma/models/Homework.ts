@@ -41,6 +41,7 @@ export type HomeworkMinAggregateOutputType = {
   title: string | null
   description: string | null
   maxMarks: number | null
+  attachmentUrl: string | null
   dueDate: Date | null
   createdBy: string | null
   createdAt: Date | null
@@ -53,6 +54,7 @@ export type HomeworkMaxAggregateOutputType = {
   title: string | null
   description: string | null
   maxMarks: number | null
+  attachmentUrl: string | null
   dueDate: Date | null
   createdBy: string | null
   createdAt: Date | null
@@ -65,6 +67,7 @@ export type HomeworkCountAggregateOutputType = {
   title: number
   description: number
   maxMarks: number
+  attachmentUrl: number
   dueDate: number
   createdBy: number
   createdAt: number
@@ -87,6 +90,7 @@ export type HomeworkMinAggregateInputType = {
   title?: true
   description?: true
   maxMarks?: true
+  attachmentUrl?: true
   dueDate?: true
   createdBy?: true
   createdAt?: true
@@ -99,6 +103,7 @@ export type HomeworkMaxAggregateInputType = {
   title?: true
   description?: true
   maxMarks?: true
+  attachmentUrl?: true
   dueDate?: true
   createdBy?: true
   createdAt?: true
@@ -111,6 +116,7 @@ export type HomeworkCountAggregateInputType = {
   title?: true
   description?: true
   maxMarks?: true
+  attachmentUrl?: true
   dueDate?: true
   createdBy?: true
   createdAt?: true
@@ -210,6 +216,7 @@ export type HomeworkGroupByOutputType = {
   title: string
   description: string | null
   maxMarks: number | null
+  attachmentUrl: string | null
   dueDate: Date
   createdBy: string
   createdAt: Date
@@ -245,6 +252,7 @@ export type HomeworkWhereInput = {
   title?: Prisma.StringFilter<"Homework"> | string
   description?: Prisma.StringNullableFilter<"Homework"> | string | null
   maxMarks?: Prisma.FloatNullableFilter<"Homework"> | number | null
+  attachmentUrl?: Prisma.StringNullableFilter<"Homework"> | string | null
   dueDate?: Prisma.DateTimeFilter<"Homework"> | Date | string
   createdBy?: Prisma.StringFilter<"Homework"> | string
   createdAt?: Prisma.DateTimeFilter<"Homework"> | Date | string
@@ -261,6 +269,7 @@ export type HomeworkOrderByWithRelationInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   maxMarks?: Prisma.SortOrderInput | Prisma.SortOrder
+  attachmentUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   dueDate?: Prisma.SortOrder
   createdBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -280,6 +289,7 @@ export type HomeworkWhereUniqueInput = Prisma.AtLeast<{
   title?: Prisma.StringFilter<"Homework"> | string
   description?: Prisma.StringNullableFilter<"Homework"> | string | null
   maxMarks?: Prisma.FloatNullableFilter<"Homework"> | number | null
+  attachmentUrl?: Prisma.StringNullableFilter<"Homework"> | string | null
   dueDate?: Prisma.DateTimeFilter<"Homework"> | Date | string
   createdBy?: Prisma.StringFilter<"Homework"> | string
   createdAt?: Prisma.DateTimeFilter<"Homework"> | Date | string
@@ -296,6 +306,7 @@ export type HomeworkOrderByWithAggregationInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   maxMarks?: Prisma.SortOrderInput | Prisma.SortOrder
+  attachmentUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   dueDate?: Prisma.SortOrder
   createdBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -316,6 +327,7 @@ export type HomeworkScalarWhereWithAggregatesInput = {
   title?: Prisma.StringWithAggregatesFilter<"Homework"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Homework"> | string | null
   maxMarks?: Prisma.FloatNullableWithAggregatesFilter<"Homework"> | number | null
+  attachmentUrl?: Prisma.StringNullableWithAggregatesFilter<"Homework"> | string | null
   dueDate?: Prisma.DateTimeWithAggregatesFilter<"Homework"> | Date | string
   createdBy?: Prisma.StringWithAggregatesFilter<"Homework"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Homework"> | Date | string
@@ -326,6 +338,7 @@ export type HomeworkCreateInput = {
   title: string
   description?: string | null
   maxMarks?: number | null
+  attachmentUrl?: string | null
   dueDate: Date | string
   createdAt?: Date | string
   class: Prisma.ClassCreateNestedOneWithoutHomeworksInput
@@ -341,6 +354,7 @@ export type HomeworkUncheckedCreateInput = {
   title: string
   description?: string | null
   maxMarks?: number | null
+  attachmentUrl?: string | null
   dueDate: Date | string
   createdBy: string
   createdAt?: Date | string
@@ -352,6 +366,7 @@ export type HomeworkUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maxMarks?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  attachmentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   class?: Prisma.ClassUpdateOneRequiredWithoutHomeworksNestedInput
@@ -367,6 +382,7 @@ export type HomeworkUncheckedUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maxMarks?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  attachmentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -380,6 +396,7 @@ export type HomeworkCreateManyInput = {
   title: string
   description?: string | null
   maxMarks?: number | null
+  attachmentUrl?: string | null
   dueDate: Date | string
   createdBy: string
   createdAt?: Date | string
@@ -390,6 +407,7 @@ export type HomeworkUpdateManyMutationInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maxMarks?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  attachmentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -401,6 +419,7 @@ export type HomeworkUncheckedUpdateManyInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maxMarks?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  attachmentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -423,6 +442,7 @@ export type HomeworkCountOrderByAggregateInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   maxMarks?: Prisma.SortOrder
+  attachmentUrl?: Prisma.SortOrder
   dueDate?: Prisma.SortOrder
   createdBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -439,6 +459,7 @@ export type HomeworkMaxOrderByAggregateInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   maxMarks?: Prisma.SortOrder
+  attachmentUrl?: Prisma.SortOrder
   dueDate?: Prisma.SortOrder
   createdBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -451,6 +472,7 @@ export type HomeworkMinOrderByAggregateInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   maxMarks?: Prisma.SortOrder
+  attachmentUrl?: Prisma.SortOrder
   dueDate?: Prisma.SortOrder
   createdBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -610,6 +632,7 @@ export type HomeworkCreateWithoutCreatorInput = {
   title: string
   description?: string | null
   maxMarks?: number | null
+  attachmentUrl?: string | null
   dueDate: Date | string
   createdAt?: Date | string
   class: Prisma.ClassCreateNestedOneWithoutHomeworksInput
@@ -624,6 +647,7 @@ export type HomeworkUncheckedCreateWithoutCreatorInput = {
   title: string
   description?: string | null
   maxMarks?: number | null
+  attachmentUrl?: string | null
   dueDate: Date | string
   createdAt?: Date | string
   submissions?: Prisma.HomeworkSubmissionUncheckedCreateNestedManyWithoutHomeworkInput
@@ -665,6 +689,7 @@ export type HomeworkScalarWhereInput = {
   title?: Prisma.StringFilter<"Homework"> | string
   description?: Prisma.StringNullableFilter<"Homework"> | string | null
   maxMarks?: Prisma.FloatNullableFilter<"Homework"> | number | null
+  attachmentUrl?: Prisma.StringNullableFilter<"Homework"> | string | null
   dueDate?: Prisma.DateTimeFilter<"Homework"> | Date | string
   createdBy?: Prisma.StringFilter<"Homework"> | string
   createdAt?: Prisma.DateTimeFilter<"Homework"> | Date | string
@@ -675,6 +700,7 @@ export type HomeworkCreateWithoutClassInput = {
   title: string
   description?: string | null
   maxMarks?: number | null
+  attachmentUrl?: string | null
   dueDate: Date | string
   createdAt?: Date | string
   subject: Prisma.SubjectCreateNestedOneWithoutHomeworksInput
@@ -688,6 +714,7 @@ export type HomeworkUncheckedCreateWithoutClassInput = {
   title: string
   description?: string | null
   maxMarks?: number | null
+  attachmentUrl?: string | null
   dueDate: Date | string
   createdBy: string
   createdAt?: Date | string
@@ -725,6 +752,7 @@ export type HomeworkCreateWithoutSubjectInput = {
   title: string
   description?: string | null
   maxMarks?: number | null
+  attachmentUrl?: string | null
   dueDate: Date | string
   createdAt?: Date | string
   class: Prisma.ClassCreateNestedOneWithoutHomeworksInput
@@ -738,6 +766,7 @@ export type HomeworkUncheckedCreateWithoutSubjectInput = {
   title: string
   description?: string | null
   maxMarks?: number | null
+  attachmentUrl?: string | null
   dueDate: Date | string
   createdBy: string
   createdAt?: Date | string
@@ -775,6 +804,7 @@ export type HomeworkCreateWithoutSubmissionsInput = {
   title: string
   description?: string | null
   maxMarks?: number | null
+  attachmentUrl?: string | null
   dueDate: Date | string
   createdAt?: Date | string
   class: Prisma.ClassCreateNestedOneWithoutHomeworksInput
@@ -789,6 +819,7 @@ export type HomeworkUncheckedCreateWithoutSubmissionsInput = {
   title: string
   description?: string | null
   maxMarks?: number | null
+  attachmentUrl?: string | null
   dueDate: Date | string
   createdBy: string
   createdAt?: Date | string
@@ -815,6 +846,7 @@ export type HomeworkUpdateWithoutSubmissionsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maxMarks?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  attachmentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   class?: Prisma.ClassUpdateOneRequiredWithoutHomeworksNestedInput
@@ -829,6 +861,7 @@ export type HomeworkUncheckedUpdateWithoutSubmissionsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maxMarks?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  attachmentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -841,6 +874,7 @@ export type HomeworkCreateManyCreatorInput = {
   title: string
   description?: string | null
   maxMarks?: number | null
+  attachmentUrl?: string | null
   dueDate: Date | string
   createdAt?: Date | string
 }
@@ -850,6 +884,7 @@ export type HomeworkUpdateWithoutCreatorInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maxMarks?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  attachmentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   class?: Prisma.ClassUpdateOneRequiredWithoutHomeworksNestedInput
@@ -864,6 +899,7 @@ export type HomeworkUncheckedUpdateWithoutCreatorInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maxMarks?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  attachmentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   submissions?: Prisma.HomeworkSubmissionUncheckedUpdateManyWithoutHomeworkNestedInput
@@ -876,6 +912,7 @@ export type HomeworkUncheckedUpdateManyWithoutCreatorInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maxMarks?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  attachmentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -886,6 +923,7 @@ export type HomeworkCreateManyClassInput = {
   title: string
   description?: string | null
   maxMarks?: number | null
+  attachmentUrl?: string | null
   dueDate: Date | string
   createdBy: string
   createdAt?: Date | string
@@ -896,6 +934,7 @@ export type HomeworkUpdateWithoutClassInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maxMarks?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  attachmentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subject?: Prisma.SubjectUpdateOneRequiredWithoutHomeworksNestedInput
@@ -909,6 +948,7 @@ export type HomeworkUncheckedUpdateWithoutClassInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maxMarks?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  attachmentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -921,6 +961,7 @@ export type HomeworkUncheckedUpdateManyWithoutClassInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maxMarks?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  attachmentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -932,6 +973,7 @@ export type HomeworkCreateManySubjectInput = {
   title: string
   description?: string | null
   maxMarks?: number | null
+  attachmentUrl?: string | null
   dueDate: Date | string
   createdBy: string
   createdAt?: Date | string
@@ -942,6 +984,7 @@ export type HomeworkUpdateWithoutSubjectInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maxMarks?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  attachmentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   class?: Prisma.ClassUpdateOneRequiredWithoutHomeworksNestedInput
@@ -955,6 +998,7 @@ export type HomeworkUncheckedUpdateWithoutSubjectInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maxMarks?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  attachmentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -967,6 +1011,7 @@ export type HomeworkUncheckedUpdateManyWithoutSubjectInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maxMarks?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  attachmentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1010,6 +1055,7 @@ export type HomeworkSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   title?: boolean
   description?: boolean
   maxMarks?: boolean
+  attachmentUrl?: boolean
   dueDate?: boolean
   createdBy?: boolean
   createdAt?: boolean
@@ -1027,6 +1073,7 @@ export type HomeworkSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   title?: boolean
   description?: boolean
   maxMarks?: boolean
+  attachmentUrl?: boolean
   dueDate?: boolean
   createdBy?: boolean
   createdAt?: boolean
@@ -1042,6 +1089,7 @@ export type HomeworkSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   title?: boolean
   description?: boolean
   maxMarks?: boolean
+  attachmentUrl?: boolean
   dueDate?: boolean
   createdBy?: boolean
   createdAt?: boolean
@@ -1057,12 +1105,13 @@ export type HomeworkSelectScalar = {
   title?: boolean
   description?: boolean
   maxMarks?: boolean
+  attachmentUrl?: boolean
   dueDate?: boolean
   createdBy?: boolean
   createdAt?: boolean
 }
 
-export type HomeworkOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "classId" | "subjectId" | "title" | "description" | "maxMarks" | "dueDate" | "createdBy" | "createdAt", ExtArgs["result"]["homework"]>
+export type HomeworkOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "classId" | "subjectId" | "title" | "description" | "maxMarks" | "attachmentUrl" | "dueDate" | "createdBy" | "createdAt", ExtArgs["result"]["homework"]>
 export type HomeworkInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   class?: boolean | Prisma.ClassDefaultArgs<ExtArgs>
   subject?: boolean | Prisma.SubjectDefaultArgs<ExtArgs>
@@ -1096,6 +1145,7 @@ export type $HomeworkPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     title: string
     description: string | null
     maxMarks: number | null
+    attachmentUrl: string | null
     dueDate: Date
     createdBy: string
     createdAt: Date
@@ -1532,6 +1582,7 @@ export interface HomeworkFieldRefs {
   readonly title: Prisma.FieldRef<"Homework", 'String'>
   readonly description: Prisma.FieldRef<"Homework", 'String'>
   readonly maxMarks: Prisma.FieldRef<"Homework", 'Float'>
+  readonly attachmentUrl: Prisma.FieldRef<"Homework", 'String'>
   readonly dueDate: Prisma.FieldRef<"Homework", 'DateTime'>
   readonly createdBy: Prisma.FieldRef<"Homework", 'String'>
   readonly createdAt: Prisma.FieldRef<"Homework", 'DateTime'>
