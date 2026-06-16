@@ -24,11 +24,11 @@ import {
   ChevronLeft,
 } from "lucide-react";
 
-const menuItems = [
+const allMenuItems = [
   { label: "الرئيسية", href: "/dashboard", icon: LayoutDashboard },
-  { label: "المستخدمون", href: "/dashboard/users", icon: Users },
-  { label: "المعلمون", href: "/dashboard/teachers", icon: GraduationCap },
-  { label: "الطلاب", href: "/dashboard/students", icon: Users },
+  { label: "المستخدمون", href: "/dashboard/users", icon: Users, roles: ["ADMIN"] },
+  { label: "المعلمون", href: "/dashboard/teachers", icon: GraduationCap, roles: ["ADMIN"] },
+  { label: "الطلاب", href: "/dashboard/students", icon: Users, roles: ["ADMIN", "TEACHER"] },
   { label: "أولياء الأمور", href: "/dashboard/parents", icon: Users },
   { label: "الصفوف", href: "/dashboard/classes", icon: BookOpen },
   { label: "المواد", href: "/dashboard/subjects", icon: BookOpen },
@@ -49,8 +49,17 @@ const menuItems = [
   { label: "الإعدادات", href: "/dashboard/settings", icon: Settings },
 ];
 
-export function Sidebar() {
+interface SidebarProps {
+  role: string;
+}
+
+export function Sidebar({ role }: SidebarProps) {
   const pathname = usePathname();
+
+  const menuItems = allMenuItems.filter((item) => {
+    if (!item.roles) return true;
+    return item.roles.includes(role);
+  });
 
   return (
     <aside className="fixed right-0 top-0 z-40 h-screen w-64 overflow-y-auto border-l border-gray-200 bg-white">

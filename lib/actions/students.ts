@@ -15,6 +15,47 @@ export async function getStudents() {
   });
 }
 
+export async function getStudentsForUser(userId: string, role: string) {
+  if (role === "ADMIN") {
+    return getStudents();
+  }
+
+  if (role === "TEACHER") {
+    const teacher = await prisma.teacher.findUnique({
+      where: { userId },
+      include: {
+        classTeacherAssignments: { select: { id: true } },
+        classTeachers: { select: { classId: true } },
+        subjectTeachers: { select: { classId: true } },
+      },
+    });
+
+    if (!teacher) return [];
+
+    const classIds = Array.from(
+      new Set([
+        ...teacher.classTeacherAssignments.map((c) => c.id),
+        ...teacher.classTeachers.map((c) => c.classId),
+        ...teacher.subjectTeachers.map((c) => c.classId),
+      ])
+    );
+
+    if (classIds.length === 0) return [];
+
+    return prisma.student.findMany({
+      where: { classId: { in: classIds } },
+      orderBy: { enrollmentDate: "desc" },
+      include: {
+        user: true,
+        class: true,
+        parent: { include: { user: true } },
+      },
+    });
+  }
+
+  return [];
+}
+
 export async function createStudent(data: {
   name: string;
   email: string;

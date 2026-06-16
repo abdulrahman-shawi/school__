@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getStudents, createStudent, updateStudent, deleteStudent } from "@/lib/actions/students";
+import { getStudentsForUser, createStudent, updateStudent, deleteStudent } from "@/lib/actions/students";
 import { getClasses } from "@/lib/actions/classes";
 import { getParents } from "@/lib/actions/parents";
 import { getSession } from "@/lib/auth";
@@ -23,20 +23,30 @@ export default function StudentsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editing, setEditing] = useState<any>(null);
   const [userId, setUserId] = useState<string>("");
+  const [userRole, setUserRole] = useState<string>("");
   const [messageStudent, setMessageStudent] = useState<any>(null);
 
   useEffect(() => {
     async function init() {
       const session = await getSession();
-      if (session) setUserId(session.userId);
-      loadData();
+      if (session) {
+        setUserId(session.userId);
+        setUserRole(session.role);
+      }
+      loadData(session?.userId || "", session?.role || "");
     }
     init();
   }, []);
 
-  async function loadData() {
+  async function loadData(currentUserId?: string, currentRole?: string) {
     setLoading(true);
-    const [s, c, p] = await Promise.all([getStudents(), getClasses(), getParents()]);
+    const uid = currentUserId || userId;
+    const role = currentRole || userRole;
+    const [s, c, p] = await Promise.all([
+      uid && role ? getStudentsForUser(uid, role) : getStudentsForUser("", ""),
+      getClasses(),
+      getParents(),
+    ]);
     setStudents(s);
     setClasses(c);
     setParents(p);
@@ -125,10 +135,12 @@ export default function StudentsPage() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">إدارة الطلاب</h1>
-        <Button onClick={() => { setEditing(null); setIsModalOpen(true); }}>
-          <Plus className="ml-2 h-4 w-4" />
-          طالب جديد
-        </Button>
+        {userRole === "ADMIN" && (
+          <Button onClick={() => { setEditing(null); setIsModalOpen(true); }}>
+            <Plus className="ml-2 h-4 w-4" />
+            طالب جديد
+          </Button>
+        )}
       </div>
 
       {loading ? (
@@ -147,18 +159,22 @@ export default function StudentsPage() {
               >
                 <Mail className="h-4 w-4" />
               </button>
-              <button
-                onClick={() => { setEditing(s); setIsModalOpen(true); }}
-                className="rounded p-1 text-blue-600 hover:bg-blue-50"
-              >
-                <Pencil className="h-4 w-4" />
-              </button>
-              <button
-                onClick={() => handleDelete(s.id)}
-                className="rounded p-1 text-red-600 hover:bg-red-50"
-              >
-                <Trash2 className="h-4 w-4" />
-              </button>
+              {userRole === "ADMIN" && (
+                <>
+                  <button
+                    onClick={() => { setEditing(s); setIsModalOpen(true); }}
+                    className="rounded p-1 text-blue-600 hover:bg-blue-50"
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(s.id)}
+                    className="rounded p-1 text-red-600 hover:bg-red-50"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </>
+              )}
             </div>
           )}
         />
