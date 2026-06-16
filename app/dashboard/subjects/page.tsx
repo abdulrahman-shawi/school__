@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getSubjects, createSubject, updateSubject, deleteSubject } from "@/lib/actions/subjects";
+import { getSubjectsForUser, createSubject, updateSubject, deleteSubject } from "@/lib/actions/subjects";
+import { getSession } from "@/lib/auth";
 import { DataTable } from "@/components/data-table/DataTable";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
@@ -15,12 +16,27 @@ export default function SubjectsPage() {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editing, setEditing] = useState<any>(null);
+  const [userId, setUserId] = useState<string>("");
+  const [userRole, setUserRole] = useState<string>("");
+  const isAdmin = userRole === "ADMIN";
 
-  useEffect(() => { loadSubjects(); }, []);
+  useEffect(() => {
+    async function init() {
+      const session = await getSession();
+      if (session) {
+        setUserId(session.userId);
+        setUserRole(session.role);
+      }
+      loadSubjects(session?.userId || "", session?.role || "");
+    }
+    init();
+  }, []);
 
-  async function loadSubjects() {
+  async function loadSubjects(currentUserId?: string, currentRole?: string) {
     setLoading(true);
-    const data = await getSubjects();
+    const uid = currentUserId || userId;
+    const role = currentRole || userRole;
+    const data = uid && role ? await getSubjectsForUser(uid, role) : await getSubjectsForUser("", "");
     setSubjects(data); setLoading(false);
   }
 
@@ -53,13 +69,19 @@ export default function SubjectsPage() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">المواد الدراسية</h1>
-        <Button onClick={() => { setEditing(null); setIsModalOpen(true); }}><Plus className="ml-2 h-4 w-4" /> مادة جديدة</Button>
+        {isAdmin && (
+          <Button onClick={() => { setEditing(null); setIsModalOpen(true); }}><Plus className="ml-2 h-4 w-4" /> مادة جديدة</Button>
+        )}
       </div>
       {loading ? <p>جاري التحميل...</p> : (
         <DataTable columns={columns} data={subjects} keyExtractor={(s) => s.id} actions={(s) => (
           <div className="flex gap-2">
-            <button onClick={() => { setEditing(s); setIsModalOpen(true); }} className="rounded p-1 text-blue-600 hover:bg-blue-50"><Pencil className="h-4 w-4" /></button>
-            <button onClick={() => handleDelete(s.id)} className="rounded p-1 text-red-600 hover:bg-red-50"><Trash2 className="h-4 w-4" /></button>
+            {isAdmin && (
+              <>
+                <button onClick={() => { setEditing(s); setIsModalOpen(true); }} className="rounded p-1 text-blue-600 hover:bg-blue-50"><Pencil className="h-4 w-4" /></button>
+                <button onClick={() => handleDelete(s.id)} className="rounded p-1 text-red-600 hover:bg-red-50"><Trash2 className="h-4 w-4" /></button>
+              </>
+            )}
           </div>
         )} />
       )}

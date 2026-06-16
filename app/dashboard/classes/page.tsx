@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import {
-  getClasses,
+  getClassesForUser,
   createClass,
   updateClass,
   deleteClass,
@@ -11,6 +11,7 @@ import {
   getClassTeacherIds,
   setClassTeachers,
 } from "@/lib/actions/classes";
+import { getSession } from "@/lib/auth";
 import { getAcademicYears } from "@/lib/actions/academicYears";
 import { getTeachers } from "@/lib/actions/teachers";
 import { getSubjects } from "@/lib/actions/subjects";
@@ -28,6 +29,9 @@ export default function ClassesPage() {
   const [teachers, setTeachers] = useState<any[]>([]);
   const [subjects, setSubjects] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState<string>("");
+  const [userRole, setUserRole] = useState<string>("");
+  const isAdmin = userRole === "ADMIN";
 
   // Main modal (create / edit)
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -46,13 +50,23 @@ export default function ClassesPage() {
   const [linkTeachersLoading, setLinkTeachersLoading] = useState(false);
 
   useEffect(() => {
-    loadData();
+    async function init() {
+      const session = await getSession();
+      if (session) {
+        setUserId(session.userId);
+        setUserRole(session.role);
+      }
+      loadData(session?.userId || "", session?.role || "");
+    }
+    init();
   }, []);
 
-  async function loadData() {
+  async function loadData(currentUserId?: string, currentRole?: string) {
     setLoading(true);
+    const uid = currentUserId || userId;
+    const role = currentRole || userRole;
     const [c, a, t, s] = await Promise.all([
-      getClasses(),
+      uid && role ? getClassesForUser(uid, role) : getClassesForUser("", ""),
       getAcademicYears(),
       getTeachers(),
       getSubjects(),
@@ -168,14 +182,16 @@ export default function ClassesPage() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">الصفوف الدراسية</h1>
-        <Button
-          onClick={() => {
-            setEditing(null);
-            setIsModalOpen(true);
-          }}
-        >
-          <Plus className="ml-2 h-4 w-4" /> صف جديد
-        </Button>
+        {isAdmin && (
+          <Button
+            onClick={() => {
+              setEditing(null);
+              setIsModalOpen(true);
+            }}
+          >
+            <Plus className="ml-2 h-4 w-4" /> صف جديد
+          </Button>
+        )}
       </div>
 
       {loading ? (
@@ -187,35 +203,39 @@ export default function ClassesPage() {
           keyExtractor={(c) => c.id}
           actions={(c) => (
             <div className="flex gap-1">
-              <button
-                onClick={() => openLinkSubjects(c)}
-                title="ربط مواد"
-                className="rounded p-1 text-emerald-600 hover:bg-emerald-50"
-              >
-                <BookOpen className="h-4 w-4" />
-              </button>
-              <button
-                onClick={() => openLinkTeachers(c)}
-                title="ربط معلمين"
-                className="rounded p-1 text-indigo-600 hover:bg-indigo-50"
-              >
-                <Users className="h-4 w-4" />
-              </button>
-              <button
-                onClick={() => {
-                  setEditing(c);
-                  setIsModalOpen(true);
-                }}
-                className="rounded p-1 text-blue-600 hover:bg-blue-50"
-              >
-                <Pencil className="h-4 w-4" />
-              </button>
-              <button
-                onClick={() => handleDelete(c.id)}
-                className="rounded p-1 text-red-600 hover:bg-red-50"
-              >
-                <Trash2 className="h-4 w-4" />
-              </button>
+              {isAdmin && (
+                <>
+                  <button
+                    onClick={() => openLinkSubjects(c)}
+                    title="ربط مواد"
+                    className="rounded p-1 text-emerald-600 hover:bg-emerald-50"
+                  >
+                    <BookOpen className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() => openLinkTeachers(c)}
+                    title="ربط معلمين"
+                    className="rounded p-1 text-indigo-600 hover:bg-indigo-50"
+                  >
+                    <Users className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() => {
+                      setEditing(c);
+                      setIsModalOpen(true);
+                    }}
+                    className="rounded p-1 text-blue-600 hover:bg-blue-50"
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(c.id)}
+                    className="rounded p-1 text-red-600 hover:bg-red-50"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </>
+              )}
             </div>
           )}
         />

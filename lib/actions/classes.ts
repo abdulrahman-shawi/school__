@@ -2,18 +2,65 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { getSession } from "@/lib/auth";
+
+async function requireAdmin() {
+  const session = await getSession();
+  if (!session || session.role !== "ADMIN") {
+    throw new Error("غير مصرح");
+  }
+}
+
+const classInclude = {
+  academicYear: true,
+  classTeacher: { include: { user: true } },
+  classTeachers: { include: { teacher: { include: { user: true } } } },
+  classSubjects: { include: { subject: true } },
+  _count: { select: { students: true, classSubjects: true, classTeachers: true } },
+} as const;
 
 export async function getClasses() {
   return prisma.class.findMany({
     orderBy: { createdAt: "desc" },
-    include: {
-      academicYear: true,
-      classTeacher: { include: { user: true } },
-      classTeachers: { include: { teacher: { include: { user: true } } } },
-      classSubjects: { include: { subject: true } },
-      _count: { select: { students: true, classSubjects: true, classTeachers: true } },
-    },
+    include: classInclude,
   });
+}
+
+export async function getClassesForUser(userId: string, role: string) {
+  if (role === "ADMIN") {
+    return getClasses();
+  }
+
+  if (role === "TEACHER") {
+    const teacher = await prisma.teacher.findUnique({
+      where: { userId },
+      include: {
+        classTeacherAssignments: { select: { id: true } },
+        classTeachers: { select: { classId: true } },
+        subjectTeachers: { select: { classId: true } },
+      },
+    });
+
+    if (!teacher) return [];
+
+    const classIds = Array.from(
+      new Set([
+        ...teacher.classTeacherAssignments.map((c) => c.id),
+        ...teacher.classTeachers.map((c) => c.classId),
+        ...teacher.subjectTeachers.map((c) => c.classId),
+      ])
+    );
+
+    if (classIds.length === 0) return [];
+
+    return prisma.class.findMany({
+      where: { id: { in: classIds } },
+      orderBy: { createdAt: "desc" },
+      include: classInclude,
+    });
+  }
+
+  return [];
 }
 
 export async function createClass(data: {
@@ -23,18 +70,21 @@ export async function createClass(data: {
   academicYearId: string;
   classTeacherId?: string;
 }) {
+  await requireAdmin();
   await prisma.class.create({ data });
   revalidatePath("/dashboard/classes");
   return { success: true };
 }
 
 export async function updateClass(id: string, data: any) {
+  await requireAdmin();
   await prisma.class.update({ where: { id }, data });
   revalidatePath("/dashboard/classes");
   return { success: true };
 }
 
 export async function deleteClass(id: string) {
+  await requireAdmin();
   await prisma.class.delete({ where: { id } });
   revalidatePath("/dashboard/classes");
   return { success: true };
@@ -51,6 +101,7 @@ export async function getClassSubjectIds(classId: string) {
 }
 
 export async function setClassSubjects(classId: string, subjectIds: string[]) {
+  await requireAdmin();
   await prisma.$transaction(async (tx) => {
     await tx.classSubject.deleteMany({ where: { classId } });
     if (subjectIds.length > 0) {
@@ -75,6 +126,7 @@ export async function getClassTeacherIds(classId: string) {
 }
 
 export async function setClassTeachers(classId: string, teacherIds: string[]) {
+  await requireAdmin();
   await prisma.$transaction(async (tx) => {
     await tx.classTeacher.deleteMany({ where: { classId } });
     if (teacherIds.length > 0) {
