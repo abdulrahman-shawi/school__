@@ -6,7 +6,7 @@ async function getTeacherClassesAndSubjects(userId: string) {
   const teacher = await prisma.teacher.findUnique({
     where: { userId },
     include: {
-      classTeacherAssignments: { include: { classSubjects: { select: { subjectId: true } } } },
+      classTeacherAssignments: { select: { id: true } },
       classTeachers: { select: { classId: true } },
       subjectTeachers: { select: { classId: true, subjectId: true } },
     },
@@ -22,12 +22,19 @@ async function getTeacherClassesAndSubjects(userId: string) {
     ...teacher.subjectTeachers.map((st) => st.classId),
   ]);
 
-  const assignmentSubjects = teacher.classTeacherAssignments.flatMap((c) =>
-    (c.classSubjects || []).map((cs) => `${c.id}|${cs.subjectId}`)
-  );
+  const classSubjectsRows = classIds.size > 0
+    ? await prisma.classSubject.findMany({
+        where: { classId: { in: Array.from(classIds) } },
+        select: { classId: true, subjectId: true },
+      })
+    : [];
+
   const subjectTeacherSubjects = teacher.subjectTeachers.map((st) => `${st.classId}|${st.subjectId}`);
 
-  const classSubjects = new Set([...assignmentSubjects, ...subjectTeacherSubjects]);
+  const classSubjects = new Set([
+    ...classSubjectsRows.map((cs) => `${cs.classId}|${cs.subjectId}`),
+    ...subjectTeacherSubjects,
+  ]);
 
   return { classIds, classSubjects };
 }

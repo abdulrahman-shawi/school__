@@ -15,7 +15,7 @@ export async function getTeacherClassesAndSubjects(userId: string) {
   const teacher = await prisma.teacher.findUnique({
     where: { userId },
     include: {
-      classTeacherAssignments: { include: { classSubjects: { select: { subjectId: true } } } },
+      classTeacherAssignments: { select: { id: true } },
       classTeachers: { select: { classId: true } },
       subjectTeachers: { select: { classId: true, subjectId: true } },
     },
@@ -38,14 +38,17 @@ export async function getTeacherClassesAndSubjects(userId: string) {
     ...subjectTeacherEntries.map((e) => e.classId),
   ]);
 
-  // معلم الصف يستطيع إدخال درجات جميع مواد صفه
-  const assignmentSubjects = teacher.classTeacherAssignments.flatMap((c) =>
-    (c.classSubjects || []).map((cs) => ({ classId: c.id, subjectId: cs.subjectId }))
-  );
+  // أي معلم مرتبط بصف يستطيع إدخال درجات جميع مواد هذا الصف
+  const classSubjectsRows = classIdSet.size > 0
+    ? await prisma.classSubject.findMany({
+        where: { classId: { in: Array.from(classIdSet) } },
+        select: { classId: true, subjectId: true },
+      })
+    : [];
 
   const classSubjects = Array.from(
     new Set(
-      [...assignmentSubjects, ...subjectTeacherEntries].map((s) => `${s.classId}|${s.subjectId}`)
+      [...classSubjectsRows, ...subjectTeacherEntries].map((s) => `${s.classId}|${s.subjectId}`)
     )
   ).map((key) => {
     const [classId, subjectId] = key.split("|");
