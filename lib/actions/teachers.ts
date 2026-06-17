@@ -11,6 +11,50 @@ export async function getTeachers() {
   });
 }
 
+export async function getTeacherClassesAndSubjects(userId: string) {
+  const teacher = await prisma.teacher.findUnique({
+    where: { userId },
+    include: {
+      classTeacherAssignments: { include: { classSubjects: { select: { subjectId: true } } } },
+      classTeachers: { select: { classId: true } },
+      subjectTeachers: { select: { classId: true, subjectId: true } },
+    },
+  });
+
+  if (!teacher) {
+    return { classIds: [] as string[], classSubjects: [] as { classId: string; subjectId: string }[] };
+  }
+
+  const assignmentClassIds = teacher.classTeacherAssignments.map((c) => c.id);
+  const assistantClassIds = teacher.classTeachers.map((ct) => ct.classId);
+  const subjectTeacherEntries = teacher.subjectTeachers.map((st) => ({
+    classId: st.classId,
+    subjectId: st.subjectId,
+  }));
+
+  const classIdSet = new Set([
+    ...assignmentClassIds,
+    ...assistantClassIds,
+    ...subjectTeacherEntries.map((e) => e.classId),
+  ]);
+
+  // معلم الصف يستطيع إدخال درجات جميع مواد صفه
+  const assignmentSubjects = teacher.classTeacherAssignments.flatMap((c) =>
+    (c.classSubjects || []).map((cs) => ({ classId: c.id, subjectId: cs.subjectId }))
+  );
+
+  const classSubjects = Array.from(
+    new Set(
+      [...assignmentSubjects, ...subjectTeacherEntries].map((s) => `${s.classId}|${s.subjectId}`)
+    )
+  ).map((key) => {
+    const [classId, subjectId] = key.split("|");
+    return { classId, subjectId };
+  });
+
+  return { classIds: Array.from(classIdSet), classSubjects };
+}
+
 export async function createTeacher(data: {
   name: string;
   email: string;
