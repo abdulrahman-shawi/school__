@@ -2,6 +2,36 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { getSession } from "@/lib/auth";
+
+async function getTeacherClassIds(userId: string) {
+  const teacher = await prisma.teacher.findUnique({
+    where: { userId },
+    include: {
+      classTeacherAssignments: { select: { id: true } },
+      classTeachers: { select: { classId: true } },
+      subjectTeachers: { select: { classId: true } },
+    },
+  });
+
+  if (!teacher) return new Set<string>();
+
+  return new Set([
+    ...teacher.classTeacherAssignments.map((c) => c.id),
+    ...teacher.classTeachers.map((c) => c.classId),
+    ...teacher.subjectTeachers.map((c) => c.classId),
+  ]);
+}
+
+async function assertClassAllowed(classId: string | null | undefined) {
+  const session = await getSession();
+  if (!session) throw new Error("غير مصرح");
+  if (session.role === "ADMIN") return;
+  if (!classId) throw new Error("غير مصرح");
+
+  const allowed = await getTeacherClassIds(session.userId);
+  if (!allowed.has(classId)) throw new Error("غير مصرح");
+}
 
 export async function getExams() {
   return prisma.exam.findMany({
@@ -15,6 +45,30 @@ export async function getExams() {
   });
 }
 
+export async function getExamsForUser(userId: string, role: string) {
+  if (role === "ADMIN") {
+    return getExams();
+  }
+
+  if (role === "TEACHER") {
+    const allowed = await getTeacherClassIds(userId);
+    if (allowed.size === 0) return [];
+
+    return prisma.exam.findMany({
+      where: { classId: { in: Array.from(allowed) } },
+      orderBy: { createdAt: "desc" },
+      include: {
+        term: true,
+        academicYear: true,
+        class: true,
+        schedules: { include: { subject: true } },
+      },
+    });
+  }
+
+  return [];
+}
+
 export async function createExam(data: {
   name: string;
   type: string;
@@ -25,6 +79,7 @@ export async function createExam(data: {
   endDate?: string;
   schedules?: { subjectId: string; examDate: string; maxMarks?: number; passMarks?: number }[];
 }) {
+  await assertClassAllowed(data.classId);
   await prisma.exam.create({
     data: {
       name: data.name,
@@ -54,6 +109,20 @@ export async function updateExam(
   data: any & { schedules?: { subjectId: string; examDate: string; maxMarks?: number; passMarks?: number }[] }
 ) {
   const { schedules, ...examData } = data;
+
+  const session = await getSession();
+  if (!session) throw new Error("غير مصرح");
+
+  if (session.role !== "ADMIN") {
+    const allowed = await getTeacherClassIds(session.userId);
+    const existing = await prisma.exam.findUnique({ where: { id }, select: { classId: true } });
+    if (!existing || (existing.classId && !allowed.has(existing.classId))) {
+      throw new Error("غير مصرح");
+    }
+    if (examData.classId && !allowed.has(examData.classId)) {
+      throw new Error("غير مصرح");
+    }
+  }
 
   await prisma.$transaction(async (tx) => {
     await tx.exam.update({
@@ -87,6 +156,17 @@ export async function updateExam(
 }
 
 export async function deleteExam(id: string) {
+  const session = await getSession();
+  if (!session) throw new Error("غير مصرح");
+
+  if (session.role !== "ADMIN") {
+    const allowed = await getTeacherClassIds(session.userId);
+    const existing = await prisma.exam.findUnique({ where: { id }, select: { classId: true } });
+    if (!existing || (existing.classId && !allowed.has(existing.classId))) {
+      throw new Error("غير مصرح");
+    }
+  }
+
   await prisma.exam.delete({ where: { id } });
   revalidatePath("/dashboard/exams");
   return { success: true };

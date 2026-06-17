@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { getExams, createExam, updateExam, deleteExam } from "@/lib/actions/exams";
+import { getExamsForUser, createExam, updateExam, deleteExam } from "@/lib/actions/exams";
 import { getAcademicYears } from "@/lib/actions/academicYears";
-import { getClasses } from "@/lib/actions/classes";
+import { getClassesForUser } from "@/lib/actions/classes";
+import { getSession } from "@/lib/auth";
 import { DataTable } from "@/components/data-table/DataTable";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
@@ -31,12 +32,27 @@ export default function ExamsPage() {
   const [years, setYears] = useState<any[]>([]);
   const [classes, setClasses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState<string>("");
+  const [userRole, setUserRole] = useState<string>("");
+  const [allowedClassIds, setAllowedClassIds] = useState<Set<string>>(new Set());
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editing, setEditing] = useState<any>(null);
   const [selectedClassId, setSelectedClassId] = useState("");
   const [scheduleRows, setScheduleRows] = useState<ScheduleRow[]>([]);
 
-  useEffect(() => { loadData(); }, []);
+  const isAdmin = userRole === "ADMIN";
+
+  useEffect(() => {
+    async function init() {
+      const session = await getSession();
+      if (session) {
+        setUserId(session.userId);
+        setUserRole(session.role);
+      }
+      loadData(session?.userId || "", session?.role || "");
+    }
+    init();
+  }, []);
 
   useEffect(() => {
     if (!isModalOpen) return;
@@ -71,10 +87,20 @@ export default function ExamsPage() {
     );
   }, [selectedClassId, classes, editing]);
 
-  async function loadData() {
+  async function loadData(currentUserId?: string, currentRole?: string) {
     setLoading(true);
-    const [e, y, c] = await Promise.all([getExams(), getAcademicYears(), getClasses()]);
-    setExams(e); setYears(y); setClasses(c); setLoading(false);
+    const uid = currentUserId || userId;
+    const role = currentRole || userRole;
+    const [e, y, c] = await Promise.all([
+      uid && role ? getExamsForUser(uid, role) : [],
+      getAcademicYears(),
+      uid && role ? getClassesForUser(uid, role) : [],
+    ]);
+    setExams(e);
+    setYears(y);
+    setClasses(c);
+    setAllowedClassIds(new Set(c.map((cls: any) => cls.id)));
+    setLoading(false);
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -158,13 +184,19 @@ export default function ExamsPage() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">الامتحانات</h1>
-        <Button onClick={() => { setEditing(null); setIsModalOpen(true); }}><Plus className="ml-2 h-4 w-4" /> امتحان جديد</Button>
+        {(isAdmin || allowedClassIds.size > 0) && (
+          <Button onClick={() => { setEditing(null); setIsModalOpen(true); }}><Plus className="ml-2 h-4 w-4" /> امتحان جديد</Button>
+        )}
       </div>
       {loading ? <p>جاري التحميل...</p> : (
         <DataTable columns={columns} data={exams} keyExtractor={(e) => e.id} actions={(e) => (
           <div className="flex gap-2">
-            <button onClick={() => { setEditing(e); setIsModalOpen(true); }} className="rounded p-1 text-blue-600 hover:bg-blue-50"><Pencil className="h-4 w-4" /></button>
-            <button onClick={() => handleDelete(e.id)} className="rounded p-1 text-red-600 hover:bg-red-50"><Trash2 className="h-4 w-4" /></button>
+            {(isAdmin || (e.classId && allowedClassIds.has(e.classId))) && (
+              <>
+                <button onClick={() => { setEditing(e); setIsModalOpen(true); }} className="rounded p-1 text-blue-600 hover:bg-blue-50"><Pencil className="h-4 w-4" /></button>
+                <button onClick={() => handleDelete(e.id)} className="rounded p-1 text-red-600 hover:bg-red-50"><Trash2 className="h-4 w-4" /></button>
+              </>
+            )}
           </div>
         )} />
       )}
