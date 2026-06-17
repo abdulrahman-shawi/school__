@@ -38,15 +38,15 @@ const allMenuItems = [
   { label: "الدرجات", href: "/dashboard/marks", icon: FileText },
   { label: "الحضور", href: "/dashboard/attendance", icon: CalendarDays },
   { label: "الواجبات", href: "/dashboard/homework", icon: FileText },
-  { label: "الرسوم", href: "/dashboard/fees", icon: Wallet },
-  { label: "الإعلانات", href: "/dashboard/notices", icon: Megaphone },
+  { label: "الرسوم", href: "/dashboard/fees", icon: Wallet, roles: ["ADMIN"] },
+  { label: "الإعلانات", href: "/dashboard/notices", icon: Megaphone, roles: ["ADMIN"] },
   { label: "الرسائل", href: "/dashboard/messages", icon: MessageSquare },
-  { label: "الفعاليات", href: "/dashboard/events", icon: Calendar },
+  { label: "الفعاليات", href: "/dashboard/events", icon: Calendar, roles: ["ADMIN"] },
   { label: "المستندات", href: "/dashboard/documents", icon: FolderOpen },
-  { label: "الإجازات", href: "/dashboard/leaves", icon: Briefcase },
-  { label: "الرواتب", href: "/dashboard/payroll", icon: Banknote },
-  { label: "السلوك", href: "/dashboard/behavior", icon: ShieldAlert },
-  { label: "الإعدادات", href: "/dashboard/settings", icon: Settings },
+  { label: "الإجازات", href: "/dashboard/leaves", icon: Briefcase, roles: ["ADMIN"] },
+  { label: "الرواتب", href: "/dashboard/payroll", icon: Banknote, roles: ["ADMIN"] },
+  { label: "السلوك", href: "/dashboard/behavior", icon: ShieldAlert, roles: ["ADMIN"] },
+  { label: "الإعدادات", href: "/dashboard/settings", icon: Settings, roles: ["ADMIN"] },
 ];
 
 interface SidebarProps {
